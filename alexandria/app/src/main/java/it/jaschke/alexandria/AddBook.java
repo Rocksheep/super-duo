@@ -28,6 +28,7 @@ import it.jaschke.alexandria.services.DownloadImage;
 
 public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private static final String TAG = "INTENT_TO_SCAN_ACTIVITY";
+    private static final String LOG_TAG = AddBook.class.getSimpleName();
     private EditText ean;
     private final int LOADER_ID = 1;
     private View rootView;
@@ -158,6 +159,7 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
             return;
         }
 
+
         String bookTitle = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.TITLE));
         ((TextView) rootView.findViewById(R.id.bookTitle)).setText(bookTitle);
 
@@ -165,7 +167,15 @@ public class AddBook extends Fragment implements LoaderManager.LoaderCallbacks<C
         ((TextView) rootView.findViewById(R.id.bookSubTitle)).setText(bookSubTitle);
 
         String authors = data.getString(data.getColumnIndex(AlexandriaContract.AuthorEntry.AUTHOR));
-        String[] authorsArr = authors.split(",");
+        String[] authorsArr;
+        if (authors == null) {
+            authors = getString(R.string.unknown_author);
+            authorsArr = new String[]{ authors };
+        }
+        else {
+            authorsArr = authors.split(",");
+        }
+
         ((TextView) rootView.findViewById(R.id.authors)).setLines(authorsArr.length);
         ((TextView) rootView.findViewById(R.id.authors)).setText(authors.replace(",","\n"));
         String imgUrl = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.IMAGE_URL));
